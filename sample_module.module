@@ -1,0 +1,202 @@
+<?php
+
+/**
+* Implementing Drupal Hooks
+*/
+function sample_module_theme($existing, $type, $theme, $path){
+	$theme = array();
+	$theme['page__online_courses'] = array(
+		'render_element' => 'content',
+		'base_hook' => 'node',
+		'template' => 'page--online-courses',
+		'path' => drupal_get_path( 'module', 'sample_module' ) . '/templates',
+	);
+	$theme['page__open_learning_courses'] = array(
+		'render_element' => 'content',
+		'base_hook' => 'node',
+		'template' => 'page--open-learning-courses',
+		'path' => drupal_get_path( 'module', 'sample_module' ) . '/templates',
+	);
+	$theme['page__ola_home'] = array(
+		'template' => 'page--ola-home',
+		'path' => drupal_get_path( 'module', 'sample_module' ) . '/templates',
+	);
+	$theme['page__ola_how_it_works'] = array(
+		'template' => 'page--ola-how-it-works',
+		'path' => drupal_get_path( 'module', 'sample_module' ) . '/templates',
+	);
+	$theme['page__ola_about_us'] = array(
+		'template' => 'page--ola-about-us',
+		'path' => drupal_get_path( 'module', 'sample_module' ) . '/templates',
+	);
+	$theme['page__ola_get_started'] = array(
+		'template' => 'page--ola-get-started',
+		'path' => drupal_get_path( 'module', 'sample_module' ) . '/templates',
+	);
+	$theme['page__ola_contact'] = array(
+		'template' => 'page--ola-contact',
+		'path' => drupal_get_path( 'module', 'sample_module' ) . '/templates',
+	);
+	return $theme;
+}
+
+function sample_module_menu() {
+	$items = array();
+	$items['open-learning'] = array(
+		'page callback' => 'sample_module_landing_page',
+		'title' => t('Home | Open Learning Academy'),
+		'type' => MENU_CALLBACK,
+		'access arguments' => array('access content'),
+	);
+	$items['open-learning/how-it-works'] = array(
+		'page callback' => 'sample_module_page_how_it_works',
+		'title' => t('How It Works | Open Learning Academy'),
+		'type' => MENU_CALLBACK,
+		'access arguments' => array('access content'),
+	);
+	$items['open-learning/about-us'] = array(
+		'page callback' => 'sample_module_page_about_us',
+		'title' => t('About Us | Open Learning Academy'),
+		'type' => MENU_CALLBACK,
+		'access arguments' => array('access content'),
+	);
+	$items['open-learning/get-started'] = array(
+		'page callback' => 'sample_module_page_get_started',
+		'title' => t('Get Started | Open Learning Academy'),
+		'type' => MENU_CALLBACK,
+		'access arguments' => array('access content'),
+	);
+	$items['open-learning/contact'] = array(
+		'page callback' => 'sample_module_contact',
+		'title' => t('Contact an Advisor | Open Learning Academy'),
+		'type' => MENU_CALLBACK,
+		'access arguments' => array('access content'),
+	);
+	return $items;
+}
+
+function sample_module_landing_page(){
+	$items = array();
+	$items['sample_module_arguments'] = array(
+		'#title' => t('Home | Open Learning Academy')
+	);
+	return $items;
+}
+
+function sample_module_page_how_it_works(){
+	$items = array();
+	$items['sample_module_arguments'] = array(
+		'#title' => t('How It Works | Open Learning Academy')
+	);
+	return $items;
+}
+
+function sample_module_page_get_started(){
+	$items = array();
+	$items['sample_module_arguments'] = array(
+		'#title' => t('Get Started | Open Learning Academy')
+	);
+	return $items;
+}
+
+function sample_module_page_about_us(){
+	$items = array();
+	$items['sample_module_arguments'] = array(
+		'#title' => t('About Us | Open Learning Academy')
+	);
+	return $items;
+}
+
+function sample_module_contact(){
+	$items = array();
+	$items['sample_module_arguments'] = array(
+		'#title' => t('Contact An Advisor | Open Learning Academy')
+	);
+	return $items;
+}
+
+// Snippet for printing permission machine names
+function sample_module_form_user_admin_permissions_alter(&$form, $form_state, $form_id) {
+  $permissions = $form['permission'];
+  foreach ($permissions as $aal => $one_permission) {
+    if (array_key_exists('#type', $one_permission) and $one_permission['#type'] == 'item') {
+      $item_id = str_replace(' ', '_', $aal);
+      $form['permission'][$aal]['#description'] .= "<div id='" . $item_id . "' class='access_arguments_item'>" . t('<i>Access Argument: </i><strong>@permission_name</strong>', array(
+        '@permission_name' => $aal,
+      )) . "</div>";
+    }
+  }
+}
+
+function sample_module_preprocess_html (&$vars){
+	if ( $node = menu_get_object() ){
+		if ( $node -> type == 'open_learning_courses' ){
+			$vars['classes_array'] = array();
+			$vars['classes_array'][] = drupal_html_class('page-courseDescription');
+		}
+	}
+	if ( current_path() == 'open-learning' ){
+		$vars['classes_array'] = array();
+		$vars['classes_array'][] = drupal_html_class('page-index');
+		$vars['head_title_array']['name'] = 'Open Learning Academy';
+		$vars['head_title'] = 'Home | Open Learning Academy';
+	}
+	if ( current_path() == 'open-learning/how-it-works' ){
+		$vars['classes_array'] = array();
+		$vars['classes_array'][] = drupal_html_class('page-how-it-works');
+	}
+	if ( current_path() == 'open-learning/about-us' ){
+		$vars['classes_array'] = array();
+		$vars['classes_array'][] = drupal_html_class('page-about-us');
+	}
+	if ( current_path() == 'open-learning/get-started' ){
+		$vars['classes_array'] = array();
+		$vars['classes_array'][] = drupal_html_class('page-get-started');
+	}
+	if ( current_path() == 'open-learning/contact' ){
+		$vars['classes_array'] = array();
+		$vars['classes_array'][] = drupal_html_class('page-contact');
+	}
+}
+
+function sample_module_preprocess_page (&$vars){
+	if ( $vars['node'] -> type == 'open_learning_courses' || current_path() == 'open-learning' || current_path() == 'open-learning/how-it-works' || current_path() == 'open-learning/contact'|| current_path() == 'open-learning/about-us'|| current_path() == 'open-learning/get-started' ){
+		drupal_add_css( drupal_get_path( 'module','sample_module' ) . '/assets/css/app.css', array( 'group' => CSS_THEME, 'weight' => 100));
+		drupal_add_css( 'https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,600i,700,700i,800', array( 'group' => CSS_THEME, 'weight' => 99));
+		drupal_add_js( drupal_get_path( 'module', 'sample_module' ) . '/assets/js/app.js', array( 'scope' => 'footer', 'group' => 'JS_DEFAULT' ) );
+	}
+	if ( $vars['node'] -> type == 'open_learning_courses' ){
+		drupal_add_js('//platform-api.sharethis.com/js/sharethis.js#property=5bdb48dbc7a9470012145b77&product=custom-share-buttons', 'external');
+	}
+	if ( current_path() == 'open-learning' ){
+		$vars['theme_hook_suggestions'][] = 'page__ola_home';
+	}
+
+	if ( current_path() == 'open-learning/how-it-works' ){
+		$vars['theme_hook_suggestions'][] = 'page__ola_how_it_works';
+	}
+
+	if ( current_path() == 'open-learning/about-us' ){
+		$vars['theme_hook_suggestions'][] = 'page__ola_about_us';
+	}
+
+	if ( current_path() == 'open-learning/get-started' ){
+		$vars['theme_hook_suggestions'][] = 'page__ola_get_started';
+	}
+
+	if ( current_path() == 'open-learning/contact' ){
+		$vars['theme_hook_suggestions'][] = 'page__ola_contact';
+	}
+	
+}
+
+function sample_module_css_alter(&$css){
+	$node = menu_get_object();
+		if ( $node -> type == 'open_learning_courses' ||  current_path() == 'open-learning' || current_path() == 'open-learning/how-it-works' || current_path() == 'open-learning/contact'|| current_path() == 'open-learning/get-started'|| current_path() == 'open-learning/about-us' ){
+			$global_css_path = drupal_get_path('theme', 'doane_university_primary');
+			unset($css[$global_css_path . '/css/global.css']);
+			unset($css[$global_css_path . '/css/doane-university-primary-default-narrow.css']);
+			unset($css[$global_css_path . '/css/doane-university-primary-default-normal.css']);
+			unset($css[$global_css_path . '/css/doane-university-primary-default-wide.css']);
+		}
+}

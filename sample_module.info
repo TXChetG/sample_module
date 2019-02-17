@@ -1,0 +1,4 @@
+name = Sample Module
+description = Contains helpers, hooks, and files for implementing custom layouts.
+core = 7.x
+package = custom
